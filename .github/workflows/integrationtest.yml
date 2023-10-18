@@ -51,6 +51,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           DB_PORT: ${{secrets.DB_PORT }}
           DB_DIALECT: ${{secrets.DB_DIALECT}}
+          
         run: npm test
 
   packer:
@@ -80,3 +81,4 @@ jobs:
         - name: Run `packer validate`
           run: |
             packer validate aws-debian.pkr.hcl
+
