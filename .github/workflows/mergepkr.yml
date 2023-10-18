@@ -1,9 +1,46 @@
-# name: Packer Build
-# on:
-#   merge_group:
-#     branches:
-#       - main 
+name: PAcker Deploy
+on:
+  push:
+    branches:
+      - dev
+      - main
 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-# jobs:
-  
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install Packer
+        run: |
+          wget https://releases.hashicorp.com/packer/1.8.6/packer_1.8.6_linux_amd64.zip
+          unzip packer_1.8.6_linux_amd64.zip
+          sudo mv packer /usr/local/bin/
+          packer --version
+        
+
+      - name: Initialize Packer
+        run: packer init ./packer/
+
+      - name: Edit .env file
+        run: |
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo DB_USER=${{ secrets.DB_USER}} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_DIALECT=${{ secrets.DB_DIALECT }} >> .env
+
+      - name: Configuring AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION}}
+
+      - name: Zip Project Files
+        run: zip -r webapp.zip ./
+
+      - name: Deploy Packer Template
+        run: packer build -var "db_user=${{ secrets.DB_USER}}" -var "db_name=${{ secrets.DB_NAME }}" -var "db_pass=${{ secrets.DB_PASSWORD }}" ./packer/

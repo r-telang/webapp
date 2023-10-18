@@ -51,7 +51,7 @@ source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_description = "AMI for CSYE 6225"
   subnet_id       = "${var.subnet_id}"
-
+  ami_users       = ["028379396800", "197782923447"] //2nd demo 
 
   aws_polling {
     delay_seconds = 120
@@ -63,7 +63,7 @@ source "amazon-ebs" "my-ami" {
 
   launch_block_device_mappings {
     delete_on_termination = true
-    device_name           = "/dev/"
+    device_name           = "/dev/cloud1"
     volume_size           = 8
     volume_type           = "gp2"
   }
@@ -73,7 +73,7 @@ build {
   sources = ["source.amazon-ebs.my-ami"]
 
   provisioner "file" {
-    source      = "webapp.zip"
+    source      = "./webapp.zip"
     destination = "/tmp/webapp.zip"
   }
 
@@ -84,10 +84,14 @@ build {
     ]
 
     inline = [
-
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
       "sudo apt-get clean",
+      "sudo mv /temp/webapp.zip /opt/webapp.zip"
+      "sudo mv /temp/.env /opt/webapp.zip"
+      "sudo apt install unzip",
+      "cd /opt",
+      "unzip webapp.zip"
       "sudo apt install nodejs npm",
       "sudo apt-get purge mariadb-server",
       "sudo apt update",
@@ -99,8 +103,7 @@ build {
       "CREATE DATABASE ${var.db_name}",
       "GRANT ALL PRIVILEGES ON ${var.db_name}.* TO '${var.db_user}'@'localhost' IDENTIFIED BY ${var.db_password}",
       "FLUSH PRIVILEGES",
-      "sudo apt install unzip",
-      "unzip webapp.zip"
+      
     ]
   }
 }
