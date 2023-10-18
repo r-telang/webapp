@@ -8,58 +8,58 @@ packer {
 }
 
 variable "aws_region" {
-    type = string
-    default = "us-east-1"
+  type    = string
+  default = "us-east-1"
 
 }
 
-variable "source_ami"{
-    type = string
-    default = "ami-06db4d78cb1d3bbf9"
+variable "source_ami" {
+  type    = string
+  default = "ami-06db4d78cb1d3bbf9"
 }
 
-variable "ssh_username"{
-    type = string
-    default = "admin"
+variable "ssh_username" {
+  type    = string
+  default = "admin"
 }
 
-variable "db_name"{
-  type = string
+variable "db_name" {
+  type    = string
   default = "demo"
 }
 
-variable "db_password"{
-  type = string
+variable "db_password" {
+  type    = string
   default = "demo"
 }
 
-variable "db_user"{
-  type = string
+variable "db_user" {
+  type    = string
   default = "root"
 }
 
 locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
 
-variable "subnet_id"{
-    type = string
-    default = "subnet-0643faa40e74d140b"
+variable "subnet_id" {
+  type    = string
+  default = "subnet-0643faa40e74d140b"
 }
 
 source "amazon-ebs" "my-ami" {
-  ami_name      = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
-  instance_type = "t2.micro"
-  region     = "${var.aws_region}"
+  ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
+  instance_type   = "t2.micro"
+  region          = "${var.aws_region}"
   ami_description = "AMI for CSYE 6225"
-  subnet_id = "${var.subnet_id}"
+  subnet_id       = "${var.subnet_id}"
 
 
   aws_polling {
     delay_seconds = 120
-    max_attempts = 50
+    max_attempts  = 50
 
   }
-  source_ami    = "${var.source_ami}"
-  ssh_username  = "${var.ssh_username}"
+  source_ami   = "${var.source_ami}"
+  ssh_username = "${var.ssh_username}"
 
   launch_block_device_mappings {
     delete_on_termination = true
@@ -82,7 +82,7 @@ build {
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
     ]
-  
+
     inline = [
 
       "sudo apt-get update",

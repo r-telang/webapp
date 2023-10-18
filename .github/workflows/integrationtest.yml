@@ -72,11 +72,11 @@ jobs:
             packer_version: '1.9.4'
 
         - name: Initialize Packer
-          run: packer init .
+          run: packer init ./packer/
 
         - name: Run `packer fmt `
           run: |
-            packer fmt .
+            packer fmt ./packer/
 
         - name: Run `packer validate`
           run: |
