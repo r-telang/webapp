@@ -87,8 +87,8 @@ build {
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
       "sudo apt-get clean",
-      "sudo mv /temp/webapp.zip /opt/webapp.zip"
-      "sudo mv /temp/.env /opt/webapp.zip"
+      "sudo mv /temp/webapp.zip /opt/webapp.zip",
+      "sudo mv /temp/.env /opt/webapp.zip",
       "sudo apt install unzip",
       "cd /opt",
       "unzip webapp.zip"
