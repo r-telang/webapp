@@ -74,11 +74,10 @@ jobs:
         - name: Initialize Packer
           run: packer init .
 
-        - name: Run `packer fmt`
+        - name: Run `packer fmt `
           run: |
-            packer fmt -check aws-debian.pkr.hcl
+            packer fmt .
 
         - name: Run `packer validate`
           run: |
-            packer validate aws-debian.pkr.hcl
-
+            packer validate ./packer/aws-debian.pkr.hcl
