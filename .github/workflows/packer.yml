@@ -1,0 +1,74 @@
+# name: Packer CI
+# on:
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   nodejs:
+#     name: MySQL Integration Test
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 18
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Display .env file
+#         run: |
+#           echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+#           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+#           echo "DB_NAME=TestDataBase1" >> .env
+#           echo "PORT=8080" >> .env
+#           cat .env
+
+#       - name: Configure MySQL
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y curl
+#           sudo systemctl start mysql
+#           sudo systemctl status mysql
+#           mysql -u ${{ secrets.DB_USER }} -p"${{ secrets.DB_PASSWORD }}" -e "CREATE DATABASE TestDataBase1;"
+ 
+#       - name: Run Tests
+#         run: npm test
+
+
+#   packer:
+#     name: Packer CI
+#     runs-on: ubuntu-latest 
+
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+
+#       - name: Download webapp repository
+#         run: zip -r webapp.zip ./
+ 
+
+#       - name: Setup Packer
+#         uses: hashicorp/setup-packer@main
+#         with:
+#           packer_version: '1.9.4'
+
+#       - name: Initialize Packer
+#         run: packer init .
+
+#       - name: Run `packer fmt`
+#         run: |
+#           packer fmt -check aws-debian.pkr.hcl
+
+#       - name: Run `Build the webapp artifact`
+#         run: |
+#           packer fmt -check aws-debian.pkr.hcl
+
+#       - name: Run `packer validate`
+#         run: |
+#           packer validate aws-debian.pkr.hcl
