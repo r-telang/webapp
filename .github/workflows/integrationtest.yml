@@ -15,7 +15,7 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
-          MYSQL_DATABASE: "demo"
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
           MYSQL_ROOT_HOST: "%"
         ports:
           - 3306:3306
@@ -46,7 +46,7 @@ jobs:
       - name: Run tests
         env:
           DB_HOST: ${{secrets.DB_HOST}}
-          DB_USER: ${{secrets.WEBAPP_DB_USER}}
+          DB_USER: ${{secrets.DB_USER}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
           DB_NAME: ${{secrets.DB_NAME}}
           DB_PORT: ${{secrets.DB_PORT }}
