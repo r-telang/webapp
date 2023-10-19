@@ -36,7 +36,7 @@ jobs:
           echo port= 8080 >> .env
           echo host= 127.0.0.1 >> .env
           echo dialect= mysql >> .env
-          echo user= ${{ secrets.USER }} >> .env
+          echo user= ${{ secrets.DB_USER }} >> .env
           echo password= ${{ secrets.PASSWORD }} >> .env
           echo database= demo >> .env
       
