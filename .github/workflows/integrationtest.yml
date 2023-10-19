@@ -79,6 +79,8 @@ jobs:
         - name: Run `packer fmt `
           run: |
             packer fmt ./packer/
+            git diff --exit-code --quiet || (echo "Packer file was formatted." && exit 1)
+          
 
         - name: Run `packer validate`
           run: |

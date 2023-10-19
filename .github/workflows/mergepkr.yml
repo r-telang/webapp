@@ -40,7 +40,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Zipping project
-        run: zip -r webapp.zip ./
+        run: zip -r webapp.zip . --exclude=*.git*
 
       - name: Deploy Packer
         run: packer build ./packer/aws-debian.pkr.hcl
