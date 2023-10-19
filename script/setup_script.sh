@@ -36,8 +36,6 @@ sudo apt install -y mariadb-server
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 
-
-
 # Access MySQL and execute SQL commands
 sudo mysql -u root << EOF
 CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
