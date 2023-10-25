@@ -23,14 +23,14 @@ jobs:
       - name: Initialize Packer
         run: packer init ./packer/
 
-      - name: Edit .env file
-        run: |
-          touch .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_USER=${{ secrets.WEBAPP_DB_USER}} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_DIALECT=${{ secrets.DB_DIALECT }} >> .env
+      # - name: Edit .env file
+      #   run: |
+      #     touch .env
+      #     echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+      #     echo DB_USER=${{ secrets.WEBAPP_DB_USER}} >> .env
+      #     echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+      #     echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+      #     echo DB_DIALECT=${{ secrets.DB_DIALECT }} >> .env
 
       - name: Configuring AWS Creds
         uses: aws-actions/configure-aws-credentials@v4

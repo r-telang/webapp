@@ -36,16 +36,17 @@ sudo apt install -y mariadb-server
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 
-# Access MySQL and execute SQL commands
-sudo mysql -u root << EOF
-CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
-CREATE DATABASE $DB_NAME;
-GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'localhost' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
-EOF
-
 # Unzip webapp.zip
 sudo unzip webapp.zip
 
 # Install Node.js dependencies
 sudo npm install
+
+sudo groupadd csye6225
+sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
+sudo cp csye6225.service /etc/systemd/system
+systemctl daemon-reload
+sudo systemctl enable csye6225
+sudo systemctl start csye6225
+sudo systemctl restart csye6225
+sudo systemctl stop csye6225
