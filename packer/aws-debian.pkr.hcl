@@ -78,11 +78,6 @@ build {
     destination = "/tmp/webapp.zip"
   }
 
-  provisioner "file" {
-    source      = ".env"
-    destination = "/tmp/.env"
-  }
-
   provisioner "shell" {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
