@@ -28,7 +28,6 @@ sudo mv /tmp/webapp.zip /opt/csye6225/webapp.zip
 cd /opt/csye6225
 
 
-
 # Purge Mariadb-server
 # sudo apt-get purge mariadb-server
 
