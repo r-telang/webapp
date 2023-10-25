@@ -22,7 +22,7 @@ sudo mv /tmp/webapp.zip /opt/csye6225/webapp.zip
 sudo apt install -y unzip
 
 # Change directory to /opt/
-cd /opt
+cd /opt/csye6225
 
 # Install Node.js and npm
 sudo apt install -y nodejs npm
