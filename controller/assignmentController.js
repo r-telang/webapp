@@ -1,12 +1,12 @@
 import Assignment from "../model/AssignmentModel.js";
 import sequelize from "../config/database.js";
 import User from "../model/UserModel.js";
-import SDC from "statsd-client";
+//import SDC from "statsd-client";
 //const statsd = require("statsd-client");
 //import {  } from "statsd-client";
 //sdc = new SDC({ host: "statsd.example.com" });
 
-const client = new statsd();
+//const client = new statsd();
 //var timer = new Date();
 //sdc.increment("some.counter");
 
