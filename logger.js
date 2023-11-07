@@ -11,7 +11,7 @@ const myFormat = printf(({ level, message, timestamp, stack }) => {
 });
 
 // Create a logger instance
-const Logger = winston.createLogger({
+const logger = winston.createLogger({
   level: "info", // Set the default minimum level to log. Change this to debug for more verbose logging
   format: combine(
     timestamp(), // Add timestamp to each log
@@ -29,15 +29,15 @@ console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
   // if ('production' === 'production') {
 
-  Logger.add(
+  logger.add(
     new winston.transports.File({ filename: "error.log", level: "error" })
   );
-  Logger.add(new winston.transports.File({ filename: "combined.log" }));
+  logger.add(new winston.transports.File({ filename: "combined.log" }));
 
   console.log("adding in log");
   // Configure CloudWatch transport
 
-  Logger.add(
+  logger.add(
     new WinstonCloudwatch({
       logGroupName: "webapp-dev", // Replace with your log group
       logStreamName: "instance-01-error-logs1", // Replace with your log stream
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === "production") {
     })
   );
 
-  Logger.add(
+  logger.add(
     new WinstonCloudwatch({
       logGroupName: "webapp-dev",
       logStreamName: "instance-01-combined-logs1", // Use your specific log stream name for combined logs
@@ -56,4 +56,4 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
-module.exports = Logger;
+export default logger;

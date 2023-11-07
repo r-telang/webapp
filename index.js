@@ -8,7 +8,7 @@ import Assignment from "./model/AssignmentModel.js";
 
 import processCSVFile from "./dataImport.js";
 import router from "./Routes/route.js";
-//import { Logger } from "./logger.js";
+import logger from "./logger.js";
 // import dotenv from "dotenv";
 // dotenv.config();
 // console.log(process.env);
@@ -43,8 +43,10 @@ try {
     },
   });
   console.log("Database sync completed successfully.");
+  logger.info("Database sync completed successfully.");
 } catch (error) {
   console.error("Error while syncing database:\n", error);
+  logger.error("Error while syncing database: " + error.message);
 }
 processCSVFile();
 
@@ -52,19 +54,8 @@ sequelize.sync().then(() => {
   app.listen(PORT, (err) => {
     if (err) throw err;
     console.log(`Application Running at http://localhost:${PORT}`);
+    logger.info(`Application is running at http://localhost:${PORT}`);
   });
 });
 
-app.get("/v1/assignment", basicAuth, (req, res, next) => {
-  if (req.query.id) {
-    console.log("by Id");
-    Logger.info(`Fetching assignment by ID: ${req.query.id}`);
-    statsd.increment("endpoint.hits.v1.assignment.byId");
-    return getAssignmentById(req, res, next);
-  }
-  Logger.info("Fetching all assignments");
-  console.log("All Assignment");
-  statsd.increment("endpoint.hits.v1.assignment.all");
-  return getAllAssignments(req, res, next);
-});
 export default app;
