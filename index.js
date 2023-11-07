@@ -8,7 +8,7 @@ import Assignment from "./model/AssignmentModel.js";
 
 import processCSVFile from "./dataImport.js";
 import router from "./Routes/route.js";
-import { Logger } from "./logger.js";
+//import { Logger } from "./logger.js";
 // import dotenv from "dotenv";
 // dotenv.config();
 // console.log(process.env);
