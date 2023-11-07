@@ -45,42 +45,41 @@ cd /opt/aws/
 #curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb 
 sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
 sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
-sudo touch /opt/aws/amazon-cloudwatch-agent/bin/
-sudo amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
-
+sudo touch /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json
+##sudo amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+sudo chmod 644 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json 
+sudo chown -R csye6225:csye6225 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json
 
 sudo sh -c 'echo "{
-  "agent": {
-      "metrics_collection_interval": 10,
-      "logfile": "/var/logs/amazon-cloudwatch-agent.log"
+  \"agent\": {
+    \"metrics_collection_interval\": 10,
+    \"logfile\": \"/var/logs/amazon-cloudwatch-agent.log\"
   },
-  "logs": {
-      "logs_collected": {
-          "files": {
-              "collect_list": [
-                  {
-                      "file_path": "/var/log/tomcat9/csye6225.log",
-                      "log_group_name": "csye6225",
-                      "log_stream_name": "webapp"
-                  }
-              ]
+  \"logs\": {
+    \"logs_collected\": {
+      \"files\": {
+        \"collect_list\": [
+          {
+            \"file_path\": \"/var/log/tomcat9/csye6225.log\",
+            \"log_group_name\": \"csye6225\",
+            \"log_stream_name\": \"webapp\"
           }
-      },
-      "log_stream_name": "cloudwatch_log_stream"
+        ]
+      }
+    },
+    \"log_stream_name\": \"cloudwatch_log_stream\"
   },
-  "metrics":{
-    "metrics_collected":{
-       "statsd":{
-          "service_address":":8125",
-          "metrics_collection_interval":15,
-          "metrics_aggregation_interval":300
-       }
+  \"metrics\": {
+    \"metrics_collected\": {
+      \"statsd\": {
+        \"service_address\": \":8125\",
+        \"metrics_collection_interval\": 15,
+        \"metrics_aggregation_interval\": 300
+      }
     }
- }
-}" > amazon-cloudwatch-agent.json'
+  }
+}" > /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json'
 
-sudo chmod 644 /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json 
-sudo chown -R root:root /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 
 sudo systemctl enable amazon-cloudwatch-agent
 sudo systemctl start amazon-cloudwatch-agent
