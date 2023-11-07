@@ -8,7 +8,7 @@ import Assignment from "./model/AssignmentModel.js";
 
 import processCSVFile from "./dataImport.js";
 import router from "./Routes/route.js";
-
+import { logger } from "./logger.js";
 // import dotenv from "dotenv";
 // dotenv.config();
 // console.log(process.env);
@@ -55,4 +55,16 @@ sequelize.sync().then(() => {
   });
 });
 
+app.get("/v1/assignment", basicAuth, (req, res, next) => {
+  if (req.query.id) {
+    console.log("by Id");
+    logger.info(`Fetching assignment by ID: ${req.query.id}`);
+    statsd.increment("endpoint.hits.v1.assignment.byId");
+    return getAssignmentById(req, res, next);
+  }
+  logger.info("Fetching all assignments");
+  console.log("All Assignment");
+  statsd.increment("endpoint.hits.v1.assignment.all");
+  return getAllAssignments(req, res, next);
+});
 export default app;

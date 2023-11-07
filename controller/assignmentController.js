@@ -1,6 +1,13 @@
 import Assignment from "../model/AssignmentModel.js";
 import sequelize from "../config/database.js";
 import User from "../model/UserModel.js";
+import SDC from "statsd-client";
+const statsd = require("statsd-client");
+//sdc = new SDC({ host: "statsd.example.com" });
+
+const client = new statsd();
+//var timer = new Date();
+//sdc.increment("some.counter");
 
 export const createAssignment = async (req, res) => {
   try {
@@ -77,6 +84,7 @@ export const getAllAssignments = async (req, res) => {
   } catch (error) {
     return res.status(401).json(error.message);
   }
+  //client.increment("api.hits.getAllAssignments");
 };
 
 // Update assignment
@@ -151,6 +159,7 @@ export const updateAssignmentById = async (req, res) => {
   } catch (error) {
     return res.status(500).json(error.message);
   }
+  //client.increment("api.hits.updateAssignmentById");
 };
 
 // delete assign
@@ -182,6 +191,7 @@ export const deleteAssignment = async (req, res) => {
   } catch (error) {
     return res.status(500).json(error.message);
   }
+  //client.increment("api.hits.deleteAssignment");
 };
 
 //get assign by id
@@ -212,4 +222,5 @@ export const getAssignmentById = async (req, res) => {
       .status(500)
       .json({ message: "Server error", error: error.message });
   }
+  //client.increment("api.hits.getAssignmentById");
 };
