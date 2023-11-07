@@ -40,7 +40,7 @@ sudo chown -R csye6225:csye6225 /opt/csye6225
 sudo chmod +x /opt/csye6225/index.js
 
 sudo npm install
-  
+
 cd /opt/aws/
 #curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb 
 sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
