@@ -47,7 +47,6 @@ sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/am
 sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
 sudo touch /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json
 sudo chmod 644 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json 
-sudo touch /var/log/tomcat9/csye6225.log
 sudo chown -R csye6225:csye6225 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json
 
 sudo sh -c 'echo "{
