@@ -6,54 +6,33 @@ import WinstonCloudwatch from "winston-cloudwatch";
 //require("dotenv").config();
 
 // Define your custom format with printf.
-const myFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} ${level}: ${stack || message}`;
+const logFormat = winston.format.printf(({ level, message, timestamp }) => {
+  return `${timestamp} ${level}: ${message}`;
 });
 
 // Create a logger instance
+// const logger = winston.createLogger({
+//   level: "info",
+//   format: combine(timestamp(), errors({ stack: true }), myFormat),
+//   transports: [
+//     new winston.transports.Console({ format: combine(colorize(), myFormat) }),
+//   ],
+// });
+
 const logger = winston.createLogger({
-  level: "info", // Set the default minimum level to log. Change this to debug for more verbose logging
-  format: combine(
-    timestamp(), // Add timestamp to each log
-    errors({ stack: true }), // Ensure to log the stack trace if available
-    myFormat // Custom format for log string
-  ),
+  level: "info", // Set the log level as needed
+  format: winston.format.combine(winston.format.timestamp(), logFormat),
   transports: [
-    // Default transport is console. It outputs the logs to the console.
-    new winston.transports.Console({ format: combine(colorize(), myFormat) }),
+    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: "error.log/var/log/csye6225_stdOp.log",
+      level: "combine",
+    }),
+    new winston.transports.File({
+      filename: "/var/log/csye6225_error.log",
+      level: "error",
+    }),
   ],
 });
-
-// In production, write to a file and to CloudWatch, in addition to the console.
-console.log(process.env.NODE_ENV);
-if (process.env.NODE_ENV === "production") {
-  // if ('production' === 'production') {
-
-  logger.add(
-    new winston.transports.File({ filename: "error.log", level: "error" })
-  );
-  logger.add(new winston.transports.File({ filename: "combined.log" }));
-
-  console.log("adding in log");
-  // Configure CloudWatch transport
-
-  logger.add(
-    new WinstonCloudwatch({
-      logGroupName: "webapp-dev", // Replace with your log group
-      logStreamName: "instance-01-error-logs1", // Replace with your log stream
-      awsRegion: "us-east-1", // Replace with your AWS region
-      jsonMessage: true,
-    })
-  );
-
-  logger.add(
-    new WinstonCloudwatch({
-      logGroupName: "webapp-dev",
-      logStreamName: "instance-01-combined-logs1", // Use your specific log stream name for combined logs
-      awsRegion: "us-east-1", // Ensure AWS_REGION is set in your environment variables
-      jsonMessage: true,
-    })
-  );
-}
 
 export default logger;

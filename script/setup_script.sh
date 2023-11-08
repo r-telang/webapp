@@ -41,13 +41,13 @@ sudo chmod +x /opt/csye6225/index.js
 
 sudo npm install
   
-cd /opt/aws/
+#cd /opt/aws/
 #curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb 
 sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
 sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
 sudo touch /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json
-##sudo amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 sudo chmod 644 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json 
+sudo touch /var/log/tomcat9/csye6225.log
 sudo chown -R csye6225:csye6225 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent.json
 
 sudo sh -c 'echo "{
@@ -60,7 +60,7 @@ sudo sh -c 'echo "{
       \"files\": {
         \"collect_list\": [
           {
-            \"file_path\": \"/var/log/tomcat9/csye6225.log\",
+            \"file_path\": \"/var/log/csye6225.log\",
             \"log_group_name\": \"csye6225\",
             \"log_stream_name\": \"webapp\"
           }
