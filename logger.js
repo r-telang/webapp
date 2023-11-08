@@ -25,7 +25,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: "log/var/log/csye6225stdop.log",
+      filename: "/var/log/csye6225stdop.log",
       level: "combine",
     }),
     new winston.transports.File({
