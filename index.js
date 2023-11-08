@@ -8,7 +8,7 @@ import Assignment from "./model/AssignmentModel.js";
 
 import processCSVFile from "./dataImport.js";
 import router from "./Routes/route.js";
-import logger from "./logger.js";
+import { logger, logger_err } from "./logger.js";
 // import dotenv from "dotenv";
 // dotenv.config();
 // console.log(process.env);
@@ -46,7 +46,7 @@ try {
   logger.info("Database sync completed successfully.");
 } catch (error) {
   console.error("Error while syncing database:\n", error);
-  logger.error("Error while syncing database: " + error.message);
+  logger_err.error("Error while syncing database: " + error.message);
 }
 processCSVFile();
 

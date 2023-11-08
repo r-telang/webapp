@@ -5,7 +5,8 @@ import User from "../model/UserModel.js";
 //const statsd = require("statsd-client");
 //import {  } from "statsd-client";
 //sdc = new SDC({ host: "statsd.example.com" });
-import logger from "../logger.js";
+import { logger, logger_err } from "../logger.js";
+import { JSON } from "sequelize";
 //const client = new statsd();
 //var timer = new Date();
 //sdc.increment("some.counter");
@@ -39,7 +40,7 @@ export const createAssignment = async (req, res) => {
         exclude: ["user_id"],
       },
     });
-
+    logger.info("a new assignment was created.");
     res.status(201).json(createdAssignment);
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
@@ -50,7 +51,9 @@ export const createAssignment = async (req, res) => {
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json("Bad Request");
     }
-    logger.error("a new assignment was not created.");
+    logger_err.error(
+      "a new assignment was not created." + JSON.toString(error)
+    );
     return res.status(500).json(error.name);
   }
 };
@@ -81,10 +84,10 @@ export const getAllAssignments = async (req, res) => {
     if (!assignments || assignments.length === 0) {
       return res.status(404).json({ message: "No assignments found" });
     }
-
+    logger.info("assignment found");
     res.status(200).json(assignments);
   } catch (error) {
-    logger.error("unable to fetch assignments.");
+    logger_err.error("unable to fetch assignments.");
     return res.status(401).json(error.message);
   }
   //client.increment("api.hits.getAllAssignments");
@@ -154,13 +157,14 @@ export const updateAssignmentById = async (req, res) => {
     await assignment.save();
 
     // Sending the updated assignment in the response
+    logger.info("assignment saved successfully");
     res.status(200).json({
       message: "Assignment updated successfully",
       updatedFields,
       assignment,
     });
   } catch (error) {
-    logger.error("unable to update assignment");
+    logger_err.error("unable to update assignment");
     return res.status(500).json(error.message);
   }
   //client.increment("api.hits.updateAssignmentById");
@@ -190,10 +194,10 @@ export const deleteAssignment = async (req, res) => {
     const deletedRowCount = await Assignment.destroy({
       where: { id: id },
     });
-
+    logger.info("Assignment deleted successfully");
     res.status(204).json({ message: "Assignment deleted successfully" });
   } catch (error) {
-    logger.error("unable to delete assignments");
+    logger_err.error("unable to delete assignments");
     return res.status(500).json(error.message);
   }
   //client.increment("api.hits.deleteAssignment");
@@ -218,12 +222,13 @@ export const getAssignmentById = async (req, res) => {
 
     // Check if assignment exists
     if (!assg) {
+      logger.info("Assignment found successfully ", assg.id);
       return res.status(404).json({ message: "Assignment not found" });
     }
 
     res.status(200).json(assg);
   } catch (error) {
-    logger.error("unable to fetch assignment by id");
+    logger_err.error("unable to fetch assignment by id");
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });
