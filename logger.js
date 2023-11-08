@@ -25,7 +25,7 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: "/var/log/csye6225stdop.log",
+      filename: "/var/log/csye6225.log",
     }),
   ],
 });
@@ -35,7 +35,7 @@ export const logger_err = winston.createLogger({
   format: winston.format.combine(winston.format.timestamp(), logFormat),
   transports: [
     new winston.transports.File({
-      filename: "/var/log/csye6225err.log",
+      filename: "/var/log/csye6225.log",
     }),
   ],
 });
