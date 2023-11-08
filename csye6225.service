@@ -11,8 +11,8 @@ ExecStart=/opt/csye6225/index.js
 Restart=always
 RestartSec=10
 TimeoutSec=15
-StandardOutput=/var/log/csye6225_stdOp.log
-StandardError=/var/log/csye6225_error.log
+StandardOutput=/var/log/csye6225stdop.log
+StandardError=/var/log/csye6225err.log
 SyslogIdentifier=csye6225-Webapp
 
 [Install]

@@ -5,7 +5,7 @@ import User from "../model/UserModel.js";
 //const statsd = require("statsd-client");
 //import {  } from "statsd-client";
 //sdc = new SDC({ host: "statsd.example.com" });
-
+import { logger } from "../logger.js";
 //const client = new statsd();
 //var timer = new Date();
 //sdc.increment("some.counter");
@@ -50,6 +50,7 @@ export const createAssignment = async (req, res) => {
     if (error.name === "SequelizeValidationError") {
       return res.status(400).json("Bad Request");
     }
+    logger.error("a new assignment was not created.");
     return res.status(500).json(error.name);
   }
 };
@@ -83,6 +84,7 @@ export const getAllAssignments = async (req, res) => {
 
     res.status(200).json(assignments);
   } catch (error) {
+    logger.error("unable to fetch assignments.");
     return res.status(401).json(error.message);
   }
   //client.increment("api.hits.getAllAssignments");
@@ -158,6 +160,7 @@ export const updateAssignmentById = async (req, res) => {
       assignment,
     });
   } catch (error) {
+    logger.error("unable to update assignment");
     return res.status(500).json(error.message);
   }
   //client.increment("api.hits.updateAssignmentById");
@@ -190,6 +193,7 @@ export const deleteAssignment = async (req, res) => {
 
     res.status(204).json({ message: "Assignment deleted successfully" });
   } catch (error) {
+    logger.error("unable to delete assignments");
     return res.status(500).json(error.message);
   }
   //client.increment("api.hits.deleteAssignment");
@@ -219,6 +223,7 @@ export const getAssignmentById = async (req, res) => {
 
     res.status(200).json(assg);
   } catch (error) {
+    logger.error("unable to fetch assignment by id");
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });
