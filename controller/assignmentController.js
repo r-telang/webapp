@@ -5,7 +5,7 @@ import User from "../model/UserModel.js";
 //const statsd = require("statsd-client");
 //import {  } from "statsd-client";
 //sdc = new SDC({ host: "statsd.example.com" });
-import { logger } from "../logger.js";
+import logger from "../logger.js";
 //const client = new statsd();
 //var timer = new Date();
 //sdc.increment("some.counter");
