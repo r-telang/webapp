@@ -3,15 +3,14 @@ import sequelize from "../config/database.js";
 import User from "../model/UserModel.js";
 //import SDC from "statsd-client";
 //const statsd = require("statsd-client");
-//import {  } from "statsd-client";
+import { StatsD } from "node-statsd";
 //sdc = new SDC({ host: "statsd.example.com" });
 import { logger, logger_err } from "../logger.js";
 import { JSON } from "sequelize";
-//const client = new statsd();
-//var timer = new Date();
-//sdc.increment("some.counter");
+export const client = new StatsD({ host: "localhost", port: 8125 });
 
 export const createAssignment = async (req, res) => {
+  client.increment("api.hits.createAssignment");
   try {
     const { name, points, num_of_attempts, deadline } = req.body;
     const user_id = req.user.id;
@@ -61,6 +60,7 @@ export const createAssignment = async (req, res) => {
 //get all ASsignments
 
 export const getAllAssignments = async (req, res) => {
+  client.increment("api.hits.getAllAssignments");
   try {
     console.log("get alla mdasmc");
     const user_id = req.user.id;
@@ -90,12 +90,12 @@ export const getAllAssignments = async (req, res) => {
     logger_err.error("unable to fetch assignments.");
     return res.status(401).json(error.message);
   }
-  //client.increment("api.hits.getAllAssignments");
 };
 
 // Update assignment
 
 export const updateAssignmentById = async (req, res) => {
+  client.increment("api.hits.updateAssignmentById");
   try {
     const { id } = req.params;
     const { name, points, num_of_attempts, deadline } = req.body;
@@ -167,12 +167,12 @@ export const updateAssignmentById = async (req, res) => {
     logger_err.error("unable to update assignment");
     return res.status(500).json(error.message);
   }
-  //client.increment("api.hits.updateAssignmentById");
 };
 
 // delete assign
 
 export const deleteAssignment = async (req, res) => {
+  client.increment("api.hits.deleteAssignment");
   try {
     // Retrieve ID from the request parameters
     const { id } = req.params;
@@ -200,12 +200,12 @@ export const deleteAssignment = async (req, res) => {
     logger_err.error("unable to delete assignments");
     return res.status(500).json(error.message);
   }
-  //client.increment("api.hits.deleteAssignment");
 };
 
 //get assign by id
 
 export const getAssignmentById = async (req, res) => {
+  client.increment("api.hits.getAssignmentById");
   try {
     const { id } = req.params;
     const user_id = req.user.id;
@@ -233,5 +233,4 @@ export const getAssignmentById = async (req, res) => {
       .status(500)
       .json({ message: "Server error", error: error.message });
   }
-  //client.increment("api.hits.getAssignmentById");
 };

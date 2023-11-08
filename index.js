@@ -9,6 +9,7 @@ import Assignment from "./model/AssignmentModel.js";
 import processCSVFile from "./dataImport.js";
 import router from "./Routes/route.js";
 import { logger, logger_err } from "./logger.js";
+import { client } from "./controller/assignmentController.js";
 // import dotenv from "dotenv";
 // dotenv.config();
 // console.log(process.env);
@@ -18,6 +19,8 @@ const PORT = 8080;
 app.use(express.json());
 
 app.get("/healthz", async (req, res) => {
+  client.increment("api.hits.getAssignmentById");
+  //console.log(client.increment("api.hits.getAssignmentById"));
   try {
     await sequelize.authenticate();
     console.log(req.body);
