@@ -19,7 +19,7 @@ const PORT = 8080;
 app.use(express.json());
 
 app.get("/healthz", async (req, res) => {
-  client.increment("api.hits.getAssignmentById");
+  client.increment("api.hits.healtz");
   //console.log(client.increment("api.hits.getAssignmentById"));
   try {
     await sequelize.authenticate();
@@ -27,6 +27,7 @@ app.get("/healthz", async (req, res) => {
     if (req.body && Object.keys(req.body).length > 0) {
       res.status(400).send("Bad Request");
     } else {
+      logger.info("source connected.");
       res
         .setHeader("Cache-Control", "no-cache")
         .status(200)

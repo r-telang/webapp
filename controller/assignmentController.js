@@ -6,7 +6,7 @@ import User from "../model/UserModel.js";
 import { StatsD } from "node-statsd";
 //sdc = new SDC({ host: "statsd.example.com" });
 import { logger, logger_err } from "../logger.js";
-import { JSON } from "sequelize";
+import { JSON, json } from "sequelize";
 export const client = new StatsD({ host: "localhost", port: 8125 });
 
 export const createAssignment = async (req, res) => {
@@ -43,6 +43,7 @@ export const createAssignment = async (req, res) => {
     res.status(201).json(createdAssignment);
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
+      logger.error("assignment already exists", error);
       return res
         .status(400)
         .json({ error: "Assignment with the same name already exists." });
@@ -84,7 +85,7 @@ export const getAllAssignments = async (req, res) => {
     if (!assignments || assignments.length === 0) {
       return res.status(404).json({ message: "No assignments found" });
     }
-    logger.info("assignment found");
+    logger.info("assignments found successfully");
     res.status(200).json(assignments);
   } catch (error) {
     logger_err.error("unable to fetch assignments.");
@@ -107,19 +108,26 @@ export const updateAssignmentById = async (req, res) => {
     const assignment = await Assignment.findOne({
       where: { id },
       attributes: {
-        exclude: ["user_id"], // Exclude the  column
+        //exclude: ["user_id"], // Exclude the  column
       },
     });
-
+    //const assignment1 = assignment.toJSON();
+    //console.log(JSON.parse(assignment1));
     if (!assignment) {
+      logger.info("Assignment not found");
       return res.status(404).json({ message: "Assignment not found" });
     }
 
     if (assignment.user_id !== authenticatedUserId) {
+      logger.warn(
+        "Not allowed to update the assignment (Authorization Failed)"
+      );
       return res
         .status(403)
         .json({ message: "You are not allowed to update this assignment" });
     }
+
+    //delete assignment.user_id;
 
     if (!name && !points && !num_of_attempts && !deadline) {
       return res
@@ -149,22 +157,19 @@ export const updateAssignmentById = async (req, res) => {
 
     // If there are no changes
     if (updatedFields.length === 0) {
+      logger.info("Assignment is not updated, No changes in the input. ");
       return res
-        .status(204)
-        .json("No update is required. No changes in the input.", assignment);
+        .status(304)
+        .json("No update is required. No changes in the input.");
     }
 
     await assignment.save();
 
     // Sending the updated assignment in the response
-    logger.info("assignment saved successfully");
-    res.status(200).json({
-      message: "Assignment updated successfully",
-      updatedFields,
-      assignment,
-    });
+    logger.info("assignment updated successfully");
+    return res.status(204).json(assignment);
   } catch (error) {
-    logger_err.error("unable to update assignment");
+    logger_err.error("unable to update assignment", error);
     return res.status(500).json(error.message);
   }
 };
@@ -185,6 +190,9 @@ export const deleteAssignment = async (req, res) => {
     }
 
     if (assignment && assignment.user_id !== authenticatedUserId) {
+      logger.error(
+        "Not allowed to delete the assignment (Authorization Failed)"
+      );
       return res
         .status(401)
         .json("You are not allowed to delete this assignment");
@@ -212,23 +220,20 @@ export const getAssignmentById = async (req, res) => {
     console.log(id);
 
     const assg = await Assignment.findOne({
-      where: { id },
+      where: { id: id },
       attributes: {
         exclude: ["user_id"], // Exclude the  column
       },
     });
-
-    console.log(assg);
-
     // Check if assignment exists
     if (!assg) {
-      logger.info("Assignment found successfully ", assg.id);
+      logger.info("Assignment not found", id);
       return res.status(404).json({ message: "Assignment not found" });
     }
-
+    logger.info("Assignment found");
     res.status(200).json(assg);
   } catch (error) {
-    logger_err.error("unable to fetch assignment by id");
+    logger_err.error("server error", error.message);
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });

@@ -12,7 +12,7 @@ Restart=always
 RestartSec=10
 TimeoutSec=15
 StandardOutput=/var/log/csye6225.log
-StandardError=/var/log/csye6225.log
+StandardError=/var/log/csye6225err.log
 SyslogIdentifier=csye6225-Webapp
 
 [Install]

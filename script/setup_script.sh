@@ -63,6 +63,11 @@ sudo sh -c 'echo "{
             \"log_group_name\": \"csye6225\",
             \"log_stream_name\": \"webapp\"
           }
+          {
+            \"file_path\": \"/var/log/csye6225err.log\",
+            \"log_group_name\": \"csye6225\",
+            \"log_stream_name\": \"webapp\"
+          }
         ]
       }
     },
@@ -73,7 +78,7 @@ sudo sh -c 'echo "{
       \"statsd\": {
         \"service_address\": \":8125\",
         \"metrics_collection_interval\": 15,
-        \"metrics_aggregation_interval\": 300
+        \"metrics_aggregation_interval\": 30
       }
     }
   }
