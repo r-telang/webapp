@@ -5,11 +5,13 @@ import Submission from "../model/SubmissionModel.js";
 import Assignment from "../model/AssignmentModel.js";
 import { logger, logger_err } from "../logger.js";
 import client from "../utils/Statsd.js";
+import AWS from "aws-sdk";
 
 export const createSubmission = async (req, res) => {
   client.increment("api.hits.createSubmission");
   try {
     const assignmentId = req.params.id;
+    const userId = req.user.id;
     const { submission_url } = req.body;
 
     // You may want to perform additional validation on the input data
@@ -32,6 +34,7 @@ export const createSubmission = async (req, res) => {
     const numAttempts = await Submission.count({
       where: {
         assignment_id: assignmentId,
+        user_id: userId,
       },
     });
 
@@ -44,11 +47,18 @@ export const createSubmission = async (req, res) => {
     // Create a new submission
     const submission = await Submission.create({
       assignment_id: assignmentId,
+      user_id: userId,
       submission_url,
     });
 
+    const createdSubmission = await Submission.findByPk(submission.id, {
+      attributes: {
+        exclude: ["user_id"],
+      },
+    });
+
     // Respond with the created submission
-    res.status(201).json(submission);
+    res.status(201).json(createdSubmission);
   } catch (error) {
     // Handle errors
     console.error(error);

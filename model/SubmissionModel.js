@@ -20,6 +20,11 @@ const Submission = sequelize.define(
       allowNull: false,
       readOnly: true,
     },
+    user_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      readOnly: true,
+    },
     submission_url: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -50,14 +55,19 @@ Submission.associate = (models) => {
     foreignKey: "assignment_id",
     as: "assignment",
   });
+  Submission.belongsTo(models.User, {
+    foreignKey: "user_id",
+    as: "user",
+  });
 };
+
 Submission.beforeCreate(async (submission, options) => {
   try {
     // Fetch the associated assignment
     const assignment = await Assignment.findByPk(submission.assignment_id);
 
     // Fetch the associated user
-    const user = await User.findByPk(assignment.assignment_id);
+    const user = await User.findByPk(submission.user_id);
 
     // Check if the deadline has passed
     if (new Date() > assignment.deadline) {
@@ -69,6 +79,7 @@ Submission.beforeCreate(async (submission, options) => {
     const numAttempts = await Submission.count({
       where: {
         assignment_id: submission.assignment_id,
+        user_id: submission.user_id,
       },
     });
 

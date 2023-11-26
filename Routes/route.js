@@ -24,7 +24,7 @@ router
   .put(basicAuth, assignmentController.updateAssignmentById);
 router
   .route("/assignments/:id/submissions")
-  .post(submissionController.createSubmission);
+  .post(basicAuth, submissionController.createSubmission);
 
 router.use((req, res) => {
   res.status(405).send();
