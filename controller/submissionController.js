@@ -7,6 +7,8 @@ import { logger, logger_err } from "../logger.js";
 import client from "../utils/Statsd.js";
 import AWS from "aws-sdk";
 
+const sns = new AWS.SNS();
+
 export const createSubmission = async (req, res) => {
   client.increment("api.hits.createSubmission");
   try {
@@ -51,6 +53,9 @@ export const createSubmission = async (req, res) => {
       submission_url,
     });
 
+    // Post the URL to an SNS topic along with user info
+    await postToSNSTopic(submission.submission_url, req.user.email);
+
     const createdSubmission = await Submission.findByPk(submission.id, {
       attributes: {
         exclude: ["user_id"],
@@ -67,3 +72,26 @@ export const createSubmission = async (req, res) => {
 };
 
 //export default createSubmission;
+
+// Function to post to SNS topic
+const postToSNSTopic = async (submissionUrl, userEmail) => {
+  try {
+    // Create a message with the submission URL and user email
+    const message = `Submission URL: ${submissionUrl}\nUser Email: ${userEmail}`;
+
+    // Specify your SNS topic ARN
+    const topicArn = process.env.SNS_TOPIC_ARN;
+
+    // Publish the message to the SNS topic
+    await sns
+      .publish({
+        TopicArn: topicArn,
+        Message: message,
+        Subject: "New Submission",
+      })
+      .promise();
+  } catch (error) {
+    console.error("Error posting to SNS topic:", error);
+    throw error;
+  }
+};
