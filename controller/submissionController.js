@@ -81,7 +81,7 @@ export const createSubmission = async (req, res) => {
 const postToSNSTopic = async (submissionUrl, userEmail) => {
   try {
     // Create a message with the submission URL and user email
-    const message = `Submission URL: ${submissionUrl}\nUser Email: ${userEmail}`;
+    const message = `Submission_URL: ${submissionUrl}\nUser_Email: ${userEmail}`;
 
     // Specify your SNS topic ARN
     const topicArn = process.env.SNS_TOPIC_ARN;
@@ -94,6 +94,7 @@ const postToSNSTopic = async (submissionUrl, userEmail) => {
         Subject: "New Submission",
       })
       .promise();
+    console.log("Message published successfully:", message);
   } catch (error) {
     console.error("Error posting to SNS topic:", error);
     throw error;
