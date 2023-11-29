@@ -6,7 +6,7 @@ import Assignment from "../model/AssignmentModel.js";
 import { logger, logger_err } from "../logger.js";
 import client from "../utils/Statsd.js";
 import AWS from "aws-sdk";
-
+AWS.config.update({ region: "us-east-1" });
 
 const sns = new AWS.SNS();
 
@@ -23,11 +23,13 @@ export const createSubmission = async (req, res) => {
     const assignment = await Assignment.findByPk(assignmentId);
 
     if (!assignment) {
+      logger_err.error("Assignment not found");
       return res.status(404).json({ error: "Assignment not found" });
     }
 
     // Check if the assignment is still open for submissions
     if (new Date() > assignment.deadline) {
+      logger_err.error("Submission rejected. Deadline has passed.");
       return res
         .status(400)
         .json({ error: "Submission rejected. Deadline has passed." });
@@ -57,12 +59,12 @@ export const createSubmission = async (req, res) => {
     // Post the URL to an SNS topic along with user info
     await postToSNSTopic(submission.submission_url, req.user.email);
 
-
     const createdSubmission = await Submission.findByPk(submission.id, {
       attributes: {
         exclude: ["user_id"],
       },
     });
+    logger.info("Submission created successfully");
 
     // Respond with the created submission
     res.status(201).json(createdSubmission);
@@ -74,7 +76,6 @@ export const createSubmission = async (req, res) => {
 };
 
 //export default createSubmission;
-
 
 // Function to post to SNS topic
 const postToSNSTopic = async (submissionUrl, userEmail) => {
@@ -98,4 +99,3 @@ const postToSNSTopic = async (submissionUrl, userEmail) => {
     throw error;
   }
 };
-
