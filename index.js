@@ -39,7 +39,7 @@ app.get("/healthz", async (req, res) => {
   }
 });
 
-app.use("/v1", router);
+app.use("/v2", router);
 try {
   await sequelize.sync({
     alter: true,
